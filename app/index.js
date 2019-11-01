@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 
 const static = require('./routes/static');
 const colleges = require('./routes/colleges');
+var StatsD = require('node-dogstatsd').StatsD;
+var dogstatsd = new StatsD();
 
 const app = express();
 
@@ -24,6 +26,9 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 app.use('/', static);
 app.use('/colleges', colleges);
+
+// Increment a counter.
+dogstatsd.increment('page.views');
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
